@@ -64,10 +64,17 @@ class Lecturer(Mentor):
         all_grades = [grade for grades in self._grades.values() for grade in grades]
         return sum(all_grades) / len(all_grades)
     
-    def __lt__(self, other):
-        if not isinstance(other, Student):
-            return NotImplemented
-        return self.get_average_grade() < other.get_average_grade()
+    def compar(self, lecture2):
+        if not isinstance(lecture2, Lecturer):
+            return "type dot't equal"
+        if self._get_average_grade() - lecture2._get_average_grade() == 0:
+            return f"The average scores equals, their average score: {self._get_average_grade()}"
+        
+        elif self._get_average_grade() - lecture2._get_average_grade() < 0:
+            return f"{lecture2._name}'s average score is higher, his average score: {lecture2._get_average_grade()}"
+        
+        else:
+            return f"{self._name}'s average score is higher, his average score: {self._get_average_grade()}"
     
     def __str__(self):
         return (
@@ -75,7 +82,6 @@ class Lecturer(Mentor):
             f"Surname: {self._surname}\n"
             f"Average rate: {self._get_average_grade():.1f}\n"
         )
-
 
 class Reviewer(Mentor):
     def __init__(self, name, surname, courses_attached):
@@ -127,5 +133,32 @@ print(lecture)
 print(rev)
 
 
-print(stud > stud2)
+print(stud.compar(stud2))
 print(lecture.compar(lecture2))
+
+# 4 задание
+# для подсчета средней оценки за домашние задания по всем студентам в рамках конкретного курса (в качестве аргументов принимаем список студентов и название курса);
+# для подсчета средней оценки за лекции всех лекторов в рамках курса (в качестве аргумента принимаем список лекторов и название курса).
+
+def avg_stud(students, course):
+    total = 0
+    cnt = 0
+    for s in students:
+        if course in s._grades.keys():
+            total += sum(s._grades[course])
+            cnt += len(s._grades[course])
+    return f"Average score: {total/cnt}"
+    
+    
+print(avg_stud([stud, stud2], "Python"))
+
+def avg_lect(lecturers, course):
+    total = 0
+    cnt = 0
+    for l in lecturers:
+        if course in l._grades.keys():
+            total += sum(l._grades[course])
+            cnt += len(l._grades[course])
+    return f"Average score: {total/cnt}"
+
+print(avg_lect([lecture, lecture2], "Python"))
